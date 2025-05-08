@@ -1,0 +1,50 @@
+/* Global styles for the School Vaccination Portal */
+
+/* Custom scrollbar styles for the entire application */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1976d2;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1565c0;
+}
+
+/* Firefox scrollbar styles */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #1976d2 #f1f1f1;
+}
+
+/* Additional utility classes for scrollable containers */
+.scrollable-container {
+    overflow-y: auto;
+    max-height: 300px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    padding: 8px;
+}
+
+.scrollable-container-sm {
+    max-height: 150px;
+}
+
+.scrollable-container-lg {
+    max-height: 500px;
+}
+
+/* For table containers with horizontal scrolling */
+.table-container {
+    overflow-x: auto;
+}
