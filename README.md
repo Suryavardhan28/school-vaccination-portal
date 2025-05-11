@@ -123,11 +123,11 @@ school-vaccination-portal/
 
 ### Video 1
 
-[https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2024tm93020_wilp_bits-pilani_ac_in/Ebhk5C1WUuxPlm-0SMZSfTUBiCdpiac3CCYKHKDpcPGcaQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=giQW5h]
+[Video 1 link](https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2024tm93020_wilp_bits-pilani_ac_in/Ebhk5C1WUuxPlm-0SMZSfTUBb4ESWWd7S3uIU1HigoC9Nw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=ZJ7SOL)
 
 ### Video 2
 
-[https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2024tm93020_wilp_bits-pilani_ac_in/EU-ZxzJ-sfxAu268XmXZQB4BmZbDthTYMoMccH-qSTyc_g?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=anjvMs]
+[Video 2 link](https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2024tm93020_wilp_bits-pilani_ac_in/EU-ZxzJ-sfxAu268XmXZQB4Br8slGsbh5NifwseIisywEw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=nUyFC3)
 
 ## 📊 Database Schema
 
