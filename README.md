@@ -1,142 +1,296 @@
 # School Vaccination Portal
 
-A full-stack web application for managing and tracking vaccination drives in a school.
+A full-stack web application for managing and tracking vaccination drives in a school. This application helps school administrators and coordinators efficiently manage student vaccinations, schedule vaccination drives, and generate reports.
 
-## Features
+## 🎯 Features
 
-- **Authentication**: School coordinator (admin) login system
-- **Dashboard**: Display key metrics including student vaccination rates and upcoming drives
-- **Student Management**: Add/edit students individually and import via CSV
-- **Vaccination Drive Management**: Schedule and manage vaccination drives
-- **Vaccination Management**: Record student vaccinations and prevent duplicates
-- **Reports**: Generate vaccination reports with filtering options
+### Authentication & Authorization
 
-## Tech Stack
+-   Secure login system for school coordinators and administrators
+-   Role-based access control (Admin and Coordinator roles)
+-   JWT-based authentication with secure password hashing
+
+### Dashboard
+
+-   Real-time overview of vaccination statistics
+-   Upcoming vaccination drives calendar
+-   Student vaccination rate visualization
+-   Quick access to key metrics and reports
+
+### Student Management
+
+-   Add/edit individual student records
+-   Bulk import students via CSV upload
+-   Search and filter students by name, ID, or class
+-   View student vaccination history
+-   Prevent duplicate student entries
+
+### Vaccination Drive Management
+
+-   Schedule new vaccination drives
+-   Set available doses and applicable classes
+-   Track drive status (upcoming, ongoing, completed)
+-   Prevent scheduling conflicts
+-   Cannot modify or delete past drives
+
+### Vaccination Records
+
+-   Record student vaccinations
+-   Prevent duplicate vaccinations
+-   Track vaccination history
+-   Filter and sort vaccination records
+-   Export vaccination data
+
+### Reports & Analytics
+
+-   Generate comprehensive vaccination reports
+-   Export data in Excel format
+-   Filter reports by date range, class, or vaccine type
+-   View vaccination statistics and trends
+
+## 🎨 Wireframes & Design
+
+View the complete wireframes and design specifications:
+[School Vaccination Portal Wireframes](https://www.figma.com/design/FKKOeGIsAGNooBQFPSzrsA/School-Vaccination-Portal?node-id=0-1&t=TNLfARnD8G4x5Ivm-1)
+
+## 🛠 Tech Stack
 
 ### Frontend
-- React with TypeScript
-- Vite for build tooling
-- Material UI for components
-- React Router for navigation
-- Axios for API requests
+
+-   **React** with **TypeScript** for type-safe development
+-   **Vite** for fast development and optimized builds
+-   **Material UI** for consistent and responsive components
+-   **React Router** for client-side routing
+-   **Axios** for API communication
+-   **React Query** for efficient data fetching and caching
+-   **Chart.js** for data visualization
+-   **Formik** & **Yup** for form handling and validation
 
 ### Backend
-- Node.js with Express
-- TypeScript
-- SQLite database with Sequelize ORM
-- JSON Web Tokens (JWT) for authentication
 
-## Project Structure
+-   **Node.js** with **Express** for the server
+-   **TypeScript** for type safety
+-   **SQLite** database with **Sequelize ORM**
+-   **JWT** for secure authentication
+-   **Bcrypt** for password hashing
+-   **Multer** for file uploads
+-   **ExcelJS** for report generation
+-   **Joi** for request validation
+
+## 📁 Project Structure
 
 ```
 school-vaccination-portal/
-├── frontend/          # React frontend
+├── frontend/                # React frontend
 │   ├── src/
-│   │   ├── components/ # Reusable UI components
-│   │   ├── pages/      # Page components
-│   │   ├── services/   # API services
-│   │   └── ...
-│   └── ...
-├── backend/           # Node.js backend
+│   │   ├── components/     # Reusable UI components
+│   │   │   ├── common/     # Shared components
+│   │   │   ├── layout/     # Layout components
+│   │   │   └── forms/      # Form components
+│   │   ├── pages/         # Page components
+│   │   ├── services/      # API services
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── utils/         # Utility functions
+│   │   ├── types/         # TypeScript types
+│   │   └── context/       # React context
+│   ├── public/            # Static assets
+│   └── index.html         # Entry HTML
+│
+├── backend/               # Node.js backend
 │   ├── src/
-│   │   ├── config/     # Configuration files
-│   │   ├── controllers/# Request handlers
-│   │   ├── middlewares/# Express middlewares
-│   │   ├── models/     # Sequelize models
-│   │   ├── routes/     # API routes
-│   │   ├── seeders/    # Sample data seeders
-│   │   └── ...
-│   └── ...
-└── ...
+│   │   ├── config/       # Configuration files
+│   │   ├── controllers/  # Request handlers
+│   │   ├── middlewares/  # Express middlewares
+│   │   ├── models/       # Sequelize models
+│   │   ├── routes/       # API routes
+│   │   ├── services/     # Business logic
+│   │   ├── utils/        # Utility functions
+│   │   ├── types/        # TypeScript types
+│   │   └── seeders/      # Sample data seeders
+│   ├── uploads/          # File upload directory
+│   └── reports/          # Generated reports
+│
+└── package.json          # Root package.json
 ```
 
-## Getting Started
+## 📊 Database Schema
+
+```mermaid
+erDiagram
+    User {
+        int id PK
+        string username UK
+        string password
+        enum role
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Student {
+        int id PK
+        string name
+        string studentId UK
+        string class
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    VaccinationDrive {
+        int id PK
+        string name
+        datetime date
+        int availableDoses
+        string applicableClasses
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Vaccination {
+        int id PK
+        int studentId FK
+        int driveId FK
+        datetime vaccinationDate
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Student ||--o{ Vaccination : "has many"
+    VaccinationDrive ||--o{ Vaccination : "has many"
+    Vaccination }o--|| Student : "belongs to"
+    Vaccination }o--|| VaccinationDrive : "belongs to"
+```
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 16+
-- Bun (recommended)
+-   Node.js 16+ or Bun runtime
+-   Git for version control
+-   A modern web browser
 
 ### Installation
 
 1. Clone the repository
-```
+
+```bash
 git clone https://github.com/yourusername/school-vaccination-portal.git
 cd school-vaccination-portal
 ```
 
-2. Install dependencies for both frontend and backend
+2. Install dependencies
+
+```bash
+# Using npm
+npm install
+
+# Using Bun (recommended)
+bun install
 ```
-bun run install:all
+
+3. Set up environment variables
+
+```bash
+# Backend (.env)
+PORT=3000
+JWT_SECRET=your_jwt_secret
+NODE_ENV=development
+
+# Frontend (.env)
+VITE_API_URL=http://localhost:3000/api
 ```
 
 ### Running the Application
 
-1. Start both the backend and frontend servers
-```
+1. Start the development servers
+
+```bash
+# Using npm
+npm run dev
+
+# Using Bun (recommended)
 bun run dev
 ```
 
 This will start:
-- Backend server at http://localhost:3000
-- Frontend development server at http://localhost:5173
 
-### Seeding the Database
+-   Backend server at http://localhost:3000
+-   Frontend development server at http://localhost:5173
 
-The application automatically seeds the database with sample data when running in development mode. If you want to manually seed the database:
+### Database Setup
 
-```
+The application uses SQLite with Sequelize ORM. The database will be automatically created and seeded with sample data in development mode.
+
+To manually manage the database:
+
+```bash
+# Seed the database
 bun run seed
-```
 
-### Reset Database
-
-If you want to reset the database:
-
-```
+# Reset the database
 bun run reset-db
 ```
 
 ### Default Credentials
 
-- Username: admin
-- Password: password123
+-   **Admin**
 
-## API Endpoints
+    -   Username: admin
+    -   Password: password123
 
-### Authentication
-- `POST /api/auth/login` - Login with username and password
+-   **Coordinator**
+    -   Username: coordinator
+    -   Password: password123
 
-### Students
-- `GET /api/students` - Get all students with pagination and filtering
-- `GET /api/students/:id` - Get a student by ID
-- `POST /api/students` - Create a new student
-- `PUT /api/students/:id` - Update a student
-- `DELETE /api/students/:id` - Delete a student
-- `POST /api/students/import` - Import students from CSV
+## 📚 API Documentation
 
-### Vaccination Drives
-- `GET /api/vaccination-drives` - Get all vaccination drives
-- `GET /api/vaccination-drives/:id` - Get a vaccination drive by ID
-- `POST /api/vaccination-drives` - Create a new vaccination drive
-- `PUT /api/vaccination-drives/:id` - Update a vaccination drive
-- `DELETE /api/vaccination-drives/:id` - Delete a vaccination drive
+The API documentation is available in the Postman collection located at `backend/postman_collection.json`. Import this file into Postman to view all available endpoints and their usage.
 
-### Vaccinations
-- `GET /api/vaccinations` - Get all vaccinations with pagination and filtering
-- `GET /api/vaccinations/:id` - Get a vaccination by ID
-- `POST /api/vaccinations` - Record a new vaccination
-- `DELETE /api/vaccinations/:id` - Delete a vaccination record
-- `GET /api/vaccinations/statistics` - Get vaccination statistics for dashboard
+### Key API Endpoints
 
-## Building for Production
+#### Authentication
 
-```
+-   `POST /api/auth/login` - Login with username and password
+
+#### Students
+
+-   `GET /api/students` - Get all students (with pagination and filtering)
+-   `POST /api/students` - Create a new student
+-   `PUT /api/students/:id` - Update a student
+-   `DELETE /api/students/:id` - Delete a student
+-   `POST /api/students/import` - Import students from CSV
+
+#### Vaccination Drives
+
+-   `GET /api/vaccination-drives` - Get all drives
+-   `POST /api/vaccination-drives` - Create a new drive
+-   `PUT /api/vaccination-drives/:id` - Update a drive
+-   `DELETE /api/vaccination-drives/:id` - Delete a drive
+
+#### Vaccinations
+
+-   `GET /api/vaccinations` - Get all vaccinations
+-   `POST /api/vaccinations` - Record a new vaccination
+-   `GET /api/vaccinations/statistics` - Get vaccination statistics
+
+## 🏗 Building for Production
+
+```bash
+# Build both frontend and backend
 bun run build
+
+# Start production server
+bun run start
 ```
 
-This will build both the frontend and backend for production use.
+## 🧪 Testing
 
-## License
+```bash
+# Run frontend tests
+bun run test:frontend
 
-This project is licensed under the MIT License. 
+# Run backend tests
+bun run test:backend
+
+# Run all tests
+bun run test
+```
