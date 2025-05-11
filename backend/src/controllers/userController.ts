@@ -16,9 +16,9 @@ export const getUsers = async (req: Request, res: Response) => {
 
         // Build where clause for filtering
         const where: any = {};
-        if (username) {
+        if (username && typeof username === "string") {
             where.username = {
-                [Op.iLike]: `%${username}%`,
+                [Op.like]: `%${username.toLowerCase()}%`,
             };
         }
         if (role && role !== "all") {
@@ -45,7 +45,10 @@ export const getUsers = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.error("Error fetching users:", error);
-        res.status(500).json({ message: "Failed to fetch users" });
+        res.status(500).json({
+            message: "Failed to fetch users",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
     }
 };
 
