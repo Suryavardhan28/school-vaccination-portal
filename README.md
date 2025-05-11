@@ -48,6 +48,12 @@ A full-stack web application for managing and tracking vaccination drives in a s
 -   Filter reports by date range, class, or vaccine type
 -   View vaccination statistics and trends
 
+### Additional Features
+
+-   View vaccination history and statistics
+-   Export data to CSV
+-   Multi-language support (English as of now, can be exteneded)
+
 ## 🎨 Wireframes & Design
 
 View the complete wireframes and design specifications:
@@ -112,6 +118,16 @@ school-vaccination-portal/
 │
 └── package.json          # Root package.json
 ```
+
+## 🎥 Demo Videos
+
+### Video 1
+
+[https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2024tm93020_wilp_bits-pilani_ac_in/Ebhk5C1WUuxPlm-0SMZSfTUBiCdpiac3CCYKHKDpcPGcaQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=giQW5h]
+
+### Video 2
+
+[https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2024tm93020_wilp_bits-pilani_ac_in/EU-ZxzJ-sfxAu268XmXZQB4BmZbDthTYMoMccH-qSTyc_g?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=anjvMs]
 
 ## 📊 Database Schema
 
