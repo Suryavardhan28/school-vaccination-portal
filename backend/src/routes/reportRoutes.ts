@@ -1,13 +1,34 @@
-import express from 'express';
-import { generateVaccinationReport } from '../controllers/reportController';
-import { authenticateToken } from '../middlewares/auth';
+import express from "express";
+import {
+    generateClassWiseReport,
+    generateDriveSummaryReport,
+    generateUnvaccinatedReport,
+    generateVaccinationReport,
+} from "../controllers/reportController";
+import { authenticateToken } from "../middlewares/auth";
 
 const router = express.Router();
 
-// Apply authentication middleware to all report routes
-router.use(authenticateToken);
+// Report routes with authentication
+router.get(
+    "/vaccination",
+    authenticateToken as any,
+    generateVaccinationReport as any
+);
+router.get(
+    "/drive-summary",
+    authenticateToken as any,
+    generateDriveSummaryReport as any
+);
+router.get(
+    "/class-wise",
+    authenticateToken as any,
+    generateClassWiseReport as any
+);
+router.get(
+    "/unvaccinated",
+    authenticateToken as any,
+    generateUnvaccinatedReport as any
+);
 
-// Report routes
-router.get('/vaccination-report', generateVaccinationReport);
-
-export default router; 
+export default router;

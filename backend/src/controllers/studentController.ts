@@ -1,10 +1,8 @@
-import type { Request, Response } from 'express';
-import type { Multer } from 'multer';
-import { Op } from 'sequelize';
-import { Student } from '../models';
-import fs from 'fs';
-import { parse } from 'csv-parse';
-import path from 'path';
+import { parse } from "csv-parse";
+import type { Request, Response } from "express";
+import fs from "fs";
+import { Op } from "sequelize";
+import { Student } from "../models";
 
 // Extended Request type for file upload
 interface RequestWithFile extends Request {
@@ -14,44 +12,58 @@ interface RequestWithFile extends Request {
 // Get all students or filtered by search criteria
 export const getStudents = async (req: Request, res: Response) => {
     try {
-        const { name, studentId, class: studentClass, vaccinationStatus } = req.query;
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
+        const { name, studentId, class: studentClass } = req.query;
+        const sortField = (req.query.sortField as string) || "name";
+        const sortDirection = (req.query.sortDirection as string) || "asc";
+
+        // Validate sort field
+        const allowedSortFields = ["name", "studentId", "class"];
+        if (!allowedSortFields.includes(sortField)) {
+            return res.status(400).json({ message: "Invalid sort field" });
+        }
+
+        // Validate sort direction
+        if (!["asc", "desc"].includes(sortDirection)) {
+            return res.status(400).json({ message: "Invalid sort direction" });
+        }
+
+        const searchParams: any = {};
+
+        // Add search conditions if parameters are provided
+        if (name) {
+            searchParams.name = { [Op.like]: `%${name}%` };
+        }
+        if (studentId) {
+            searchParams.studentId = { [Op.like]: `%${studentId}%` };
+        }
+        if (studentClass) {
+            // Split the class parameter by comma and create an OR condition
+            const classes = (studentClass as string).split(",");
+            searchParams.class = {
+                [Op.or]: classes.map((c) => ({ [Op.eq]: c.trim() })),
+            };
+        }
+
         const offset = (page - 1) * limit;
 
-        let whereCondition: any = {};
-
-        if (name) {
-            whereCondition.name = { [Op.like]: `%${name}%` };
-        }
-
-        if (studentId) {
-            whereCondition.studentId = { [Op.like]: `%${studentId}%` };
-        }
-
-        if (studentClass) {
-            whereCondition.class = { [Op.like]: `%${studentClass}%` };
-        }
-
-        // Vaccination status filter to be implemented with join
-        // This is a placeholder and will need to be updated
-
         const { count, rows } = await Student.findAndCountAll({
-            where: whereCondition,
+            where: searchParams,
             limit,
             offset,
-            order: [['name', 'ASC']],
+            order: [[sortField, sortDirection.toUpperCase()]],
         });
 
         res.json({
-            total: count,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page,
             students: rows,
+            total: count,
+            page,
+            totalPages: Math.ceil(count / limit),
         });
     } catch (error) {
-        console.error('Error getting students:', error);
-        res.status(500).json({ message: 'Failed to get students' });
+        console.error("Error fetching students:", error);
+        res.status(500).json({ message: "Error fetching students" });
     }
 };
 
@@ -62,13 +74,13 @@ export const getStudentById = async (req: Request, res: Response) => {
         const student = await Student.findByPk(id);
 
         if (!student) {
-            return res.status(404).json({ message: 'Student not found' });
+            return res.status(404).json({ message: "Student not found" });
         }
 
         res.json(student);
     } catch (error) {
-        console.error('Error getting student:', error);
-        res.status(500).json({ message: 'Failed to get student' });
+        console.error("Error getting student:", error);
+        res.status(500).json({ message: "Failed to get student" });
     }
 };
 
@@ -79,25 +91,29 @@ export const createStudent = async (req: Request, res: Response) => {
 
         // Validate input
         if (!name || !studentId || !studentClass) {
-            return res.status(400).json({ message: 'Name, ID, and class are required' });
+            return res
+                .status(400)
+                .json({ message: "Name, ID, and class are required" });
         }
 
         // Check for existing student with same ID
         const existingStudent = await Student.findOne({ where: { studentId } });
         if (existingStudent) {
-            return res.status(409).json({ message: 'Student ID already exists' });
+            return res
+                .status(409)
+                .json({ message: "Student ID already exists" });
         }
 
         const student = await Student.create({
             name,
             studentId,
-            class: studentClass
+            class: studentClass,
         });
 
         res.status(201).json(student);
     } catch (error) {
-        console.error('Error creating student:', error);
-        res.status(500).json({ message: 'Failed to create student' });
+        console.error("Error creating student:", error);
+        res.status(500).json({ message: "Failed to create student" });
     }
 };
 
@@ -109,27 +125,31 @@ export const updateStudent = async (req: Request, res: Response) => {
 
         const student = await Student.findByPk(id);
         if (!student) {
-            return res.status(404).json({ message: 'Student not found' });
+            return res.status(404).json({ message: "Student not found" });
         }
 
         // If studentId is changing, check it's not already used
-        if (studentId && studentId !== student.get('studentId')) {
-            const existingStudent = await Student.findOne({ where: { studentId } });
+        if (studentId && studentId !== student.get("studentId")) {
+            const existingStudent = await Student.findOne({
+                where: { studentId },
+            });
             if (existingStudent) {
-                return res.status(409).json({ message: 'Student ID already exists' });
+                return res
+                    .status(409)
+                    .json({ message: "Student ID already exists" });
             }
         }
 
         await student.update({
-            name: name || student.get('name'),
-            studentId: studentId || student.get('studentId'),
-            class: studentClass || student.get('class')
+            name: name || student.get("name"),
+            studentId: studentId || student.get("studentId"),
+            class: studentClass || student.get("class"),
         });
 
         res.json(student);
     } catch (error) {
-        console.error('Error updating student:', error);
-        res.status(500).json({ message: 'Failed to update student' });
+        console.error("Error updating student:", error);
+        res.status(500).json({ message: "Failed to update student" });
     }
 };
 
@@ -140,23 +160,26 @@ export const deleteStudent = async (req: Request, res: Response) => {
 
         const student = await Student.findByPk(id);
         if (!student) {
-            return res.status(404).json({ message: 'Student not found' });
+            return res.status(404).json({ message: "Student not found" });
         }
 
         await student.destroy();
 
-        res.json({ message: 'Student deleted successfully' });
+        res.json({ message: "Student deleted successfully" });
     } catch (error) {
-        console.error('Error deleting student:', error);
-        res.status(500).json({ message: 'Failed to delete student' });
+        console.error("Error deleting student:", error);
+        res.status(500).json({ message: "Failed to delete student" });
     }
 };
 
 // Import students from CSV
-export const importStudentsFromCSV = async (req: RequestWithFile, res: Response) => {
+export const importStudentsFromCSV = async (
+    req: RequestWithFile,
+    res: Response
+) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ message: 'No CSV file uploaded' });
+            return res.status(400).json({ message: "No CSV file uploaded" });
         }
 
         const filePath = req.file.path;
@@ -164,11 +187,11 @@ export const importStudentsFromCSV = async (req: RequestWithFile, res: Response)
 
         // Parse CSV file
         fs.createReadStream(filePath)
-            .pipe(parse({ delimiter: ',', columns: true, trim: true }))
-            .on('data', (data: any) => {
+            .pipe(parse({ delimiter: ",", columns: true, trim: true }))
+            .on("data", (data: any) => {
                 results.push(data);
             })
-            .on('end', async () => {
+            .on("end", async () => {
                 // Clean up temporary file
                 fs.unlinkSync(filePath);
 
@@ -182,15 +205,23 @@ export const importStudentsFromCSV = async (req: RequestWithFile, res: Response)
                         try {
                             // Validate required fields
                             if (!row.name || !row.studentId || !row.class) {
-                                errors.push(`Row with student ID ${row.studentId || 'unknown'}: Missing required fields`);
+                                errors.push(
+                                    `Row with student ID ${
+                                        row.studentId || "unknown"
+                                    }: Missing required fields`
+                                );
                                 errorCount++;
                                 continue;
                             }
 
                             // Check for existing student
-                            const existingStudent = await Student.findOne({ where: { studentId: row.studentId } });
+                            const existingStudent = await Student.findOne({
+                                where: { studentId: row.studentId },
+                            });
                             if (existingStudent) {
-                                errors.push(`Student ID ${row.studentId} already exists`);
+                                errors.push(
+                                    `Student ID ${row.studentId} already exists`
+                                );
                                 errorCount++;
                                 continue;
                             }
@@ -199,35 +230,68 @@ export const importStudentsFromCSV = async (req: RequestWithFile, res: Response)
                             await Student.create({
                                 name: row.name,
                                 studentId: row.studentId,
-                                class: row.class
+                                class: row.class,
                             });
 
                             successCount++;
                         } catch (error) {
-                            console.error('Error processing row:', error);
-                            errors.push(`Error processing row for student ID ${row.studentId || 'unknown'}`);
+                            console.error("Error processing row:", error);
+                            errors.push(
+                                `Error processing row for student ID ${
+                                    row.studentId || "unknown"
+                                }`
+                            );
                             errorCount++;
                         }
                     }
 
-                    res.json({
-                        message: 'CSV import completed',
+                    // Determine response status and message based on results
+                    let statusCode = 200;
+                    let message = "CSV import completed successfully";
+
+                    if (errorCount > 0 && successCount > 0) {
+                        // Partial success
+                        statusCode = 400;
+                        message = "CSV import completed with some errors";
+                    } else if (errorCount > 0 && successCount === 0) {
+                        // Complete failure
+                        statusCode = 400;
+                        message = "CSV import failed";
+                    }
+
+                    res.status(statusCode).json({
+                        message,
                         totalProcessed: results.length,
                         successCount,
                         errorCount,
-                        errors: errors.length > 0 ? errors : undefined
+                        errors: errors.length > 0 ? errors : undefined,
                     });
                 } catch (error) {
-                    console.error('Error during CSV import:', error);
-                    res.status(500).json({ message: 'Error processing CSV data' });
+                    console.error("Error during CSV import:", error);
+                    res.status(500).json({
+                        message: "Error processing CSV data",
+                        errorCount: results.length,
+                        successCount: 0,
+                        errors: [],
+                    });
                 }
             })
-            .on('error', (error: Error) => {
-                console.error('Error parsing CSV:', error);
-                res.status(500).json({ message: 'Error parsing CSV file' });
+            .on("error", (error: Error) => {
+                console.error("Error parsing CSV:", error);
+                res.status(500).json({
+                    message: "Error parsing CSV file",
+                    errorCount: 0,
+                    successCount: 0,
+                    errors: [],
+                });
             });
     } catch (error) {
-        console.error('Error importing students from CSV:', error);
-        res.status(500).json({ message: 'Failed to import students from CSV' });
+        console.error("Error importing students from CSV:", error);
+        res.status(500).json({
+            message: "Failed to import students from CSV",
+            errorCount: 0,
+            successCount: 0,
+            errors: [],
+        });
     }
-}; 
+};

@@ -1,6 +1,6 @@
-import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/database';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/database";
 
 // Define User model
 class User extends Model {
@@ -19,7 +19,7 @@ class User extends Model {
         try {
             return await bcrypt.compare(password, this.password);
         } catch (error) {
-            console.error('Password validation error:', error);
+            console.error("Password validation error:", error);
             return false;
         }
     }
@@ -42,14 +42,14 @@ User.init(
             allowNull: false,
         },
         role: {
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM("admin", "coordinator"),
             allowNull: false,
-            defaultValue: 'user',
+            defaultValue: "coordinator",
         },
     },
     {
         sequelize,
-        tableName: 'users',
+        tableName: "users",
         hooks: {
             // Hash password before saving
             beforeCreate: async (user: User) => {
@@ -58,19 +58,19 @@ User.init(
                         const salt = await bcrypt.genSalt(10);
                         user.password = await bcrypt.hash(user.password, salt);
                     } catch (error) {
-                        console.error('Error hashing password:', error);
-                        throw new Error('Failed to hash password');
+                        console.error("Error hashing password:", error);
+                        throw new Error("Failed to hash password");
                     }
                 }
             },
             beforeUpdate: async (user: User) => {
-                if (user.changed('password')) {
+                if (user.changed("password")) {
                     try {
                         const salt = await bcrypt.genSalt(10);
                         user.password = await bcrypt.hash(user.password, salt);
                     } catch (error) {
-                        console.error('Error hashing password:', error);
-                        throw new Error('Failed to hash password');
+                        console.error("Error hashing password:", error);
+                        throw new Error("Failed to hash password");
                     }
                 }
             },
@@ -78,4 +78,4 @@ User.init(
     }
 );
 
-export default User; 
+export default User;

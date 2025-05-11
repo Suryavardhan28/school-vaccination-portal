@@ -1,137 +1,187 @@
-import { AppBar, Box, Button, Toolbar, Typography, IconButton, Menu, MenuItem } from '@mui/material';
-import { AccountCircle, Dashboard, School, Vaccines, MedicalServices, ExitToApp } from '@mui/icons-material';
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { logout, getCurrentUser } from '../services/authService';
+import { AppBar, Box, Button, Grid, Toolbar, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "../hooks/useTranslation";
 
-const Navbar = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const location = useLocation();
-  const user = getCurrentUser();
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    handleClose();
-    logout();
-  };
-
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
-
-  if (!user) return null;
-
-  return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          School Vaccination Portal
-        </Typography>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Button
-            component={Link}
-            to="/"
-            color="inherit"
-            startIcon={<Dashboard />}
-            sx={{ 
-              mx: 1, 
-              fontWeight: isActive('/') ? 'bold' : 'normal',
-              borderBottom: isActive('/') ? '2px solid white' : 'none'
-            }}
-          >
-            Dashboard
-          </Button>
-          
-          <Button
-            component={Link}
-            to="/students"
-            color="inherit"
-            startIcon={<School />}
-            sx={{ 
-              mx: 1, 
-              fontWeight: isActive('/students') ? 'bold' : 'normal',
-              borderBottom: isActive('/students') ? '2px solid white' : 'none'
-            }}
-          >
-            Students
-          </Button>
-          
-          <Button
-            component={Link}
-            to="/vaccination-drives"
-            color="inherit"
-            startIcon={<Vaccines />}
-            sx={{ 
-              mx: 1, 
-              fontWeight: isActive('/vaccination-drives') ? 'bold' : 'normal',
-              borderBottom: isActive('/vaccination-drives') ? '2px solid white' : 'none'
-            }}
-          >
-            Vaccination Drives
-          </Button>
-          
-          <Button
-            component={Link}
-            to="/vaccinations"
-            color="inherit"
-            startIcon={<MedicalServices />}
-            sx={{ 
-              mx: 1, 
-              fontWeight: isActive('/vaccinations') ? 'bold' : 'normal',
-              borderBottom: isActive('/vaccinations') ? '2px solid white' : 'none'
-            }}
-          >
-            Vaccinations
-          </Button>
-          
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-            sx={{ ml: 2 }}
-          >
-            <AccountCircle />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem disabled>
-              <Typography variant="body2">
-                Signed in as <strong>{user.username}</strong>
-              </Typography>
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>
-              <ExitToApp fontSize="small" sx={{ mr: 1 }} />
-              Logout
-            </MenuItem>
-          </Menu>
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
+const hoverStyle = {
+    color: "primary.main",
+    borderBottom: "2px solid",
+    borderColor: "primary.main",
+    borderRadius: "0",
+    backgroundColor: "transparent",
 };
 
-export default Navbar; 
+const defaultStyle = {
+    fontWeight: "bold",
+    borderRadius: "0",
+    borderColor: "primary.main",
+    "&:hover": hoverStyle,
+};
+
+const Navbar = () => {
+    const { t } = useTranslation();
+    const { user, logout } = useAuth();
+    const [selectedItem, setSelectedItem] = useState<string>("");
+    const location = useLocation();
+
+    // update selection based on location path
+    useEffect(() => {
+        const path = location.pathname;
+        if (path === "/") {
+            setSelectedItem("dashboard");
+        } else if (path === "/students") {
+            setSelectedItem("students");
+        } else if (path === "/vaccination-drives") {
+            setSelectedItem("vaccination-drives");
+        } else if (path === "/vaccinations") {
+            setSelectedItem("vaccinations");
+        } else if (path === "/reports") {
+            setSelectedItem("reports");
+        } else if (path === "/users") {
+            setSelectedItem("users");
+        }
+    }, [location]);
+
+    if (!user) {
+        return <></>;
+    }
+
+    return (
+        <AppBar position="static" color="default" elevation={1}>
+            <Toolbar>
+                <Grid
+                    container
+                    alignItems="center"
+                    justifyContent="space-between"
+                    width="100%"
+                >
+                    <Grid>
+                        <Typography
+                            variant="h6"
+                            component={Link}
+                            to="/"
+                            sx={{
+                                textDecoration: "none",
+                                color: "primary.main",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            {t("navigation.title").toUpperCase()}
+                        </Typography>
+                    </Grid>
+
+                    <Grid>
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                            <Button
+                                component={Link}
+                                to="/students"
+                                color="inherit"
+                                sx={{
+                                    borderRadius: "0",
+                                    fontWeight: "bold",
+                                    color:
+                                        selectedItem === "students"
+                                            ? "primary.main"
+                                            : "inherit",
+                                    borderBottom:
+                                        selectedItem === "students"
+                                            ? "2px solid"
+                                            : "none",
+                                    borderColor: "primary.main",
+                                    "&:hover": hoverStyle,
+                                }}
+                            >
+                                {t("navigation.students")}
+                            </Button>
+                            {/* Users button for admin only */}
+                            {user?.role === "admin" && (
+                                <Button
+                                    component={Link}
+                                    to="/users"
+                                    color="inherit"
+                                    sx={{
+                                        ...defaultStyle,
+                                        color:
+                                            selectedItem === "users"
+                                                ? "primary.main"
+                                                : "inherit",
+                                        borderBottom:
+                                            selectedItem === "users"
+                                                ? "2px solid"
+                                                : "none",
+                                    }}
+                                >
+                                    {t("navigation.users")}
+                                </Button>
+                            )}
+                            <Button
+                                component={Link}
+                                to="/vaccination-drives"
+                                color="inherit"
+                                sx={{
+                                    ...defaultStyle,
+                                    color:
+                                        selectedItem === "vaccination-drives"
+                                            ? "primary.main"
+                                            : "inherit",
+                                    borderBottom:
+                                        selectedItem === "vaccination-drives"
+                                            ? "2px solid"
+                                            : "none",
+                                }}
+                            >
+                                {t("navigation.vaccinationDrives")}
+                            </Button>
+                            <Button
+                                component={Link}
+                                to="/vaccinations"
+                                color="inherit"
+                                sx={{
+                                    ...defaultStyle,
+                                    color:
+                                        selectedItem === "vaccinations"
+                                            ? "primary.main"
+                                            : "inherit",
+                                    borderBottom:
+                                        selectedItem === "vaccinations"
+                                            ? "2px solid"
+                                            : "none",
+                                }}
+                            >
+                                {t("navigation.vaccinations")}
+                            </Button>
+                            <Button
+                                component={Link}
+                                to="/reports"
+                                color="inherit"
+                                sx={{
+                                    ...defaultStyle,
+                                    color:
+                                        selectedItem === "reports"
+                                            ? "primary.main"
+                                            : "inherit",
+                                    borderBottom:
+                                        selectedItem === "reports"
+                                            ? "2px solid"
+                                            : "none",
+                                }}
+                            >
+                                {t("navigation.reports")}
+                            </Button>
+                            <Button
+                                onClick={logout}
+                                color="inherit"
+                                sx={defaultStyle}
+                            >
+                                {t("auth.logout")}
+                            </Button>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Toolbar>
+        </AppBar>
+    );
+};
+
+export default Navbar;

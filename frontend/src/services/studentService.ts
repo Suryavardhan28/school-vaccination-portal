@@ -1,4 +1,4 @@
-import api from './api';
+import api from "./api";
 
 export interface Student {
     id: number;
@@ -19,14 +19,22 @@ interface StudentsResponse {
 export const getStudents = async (
     page = 1,
     limit = 10,
-    search?: { name?: string; studentId?: string; class?: string; }
+    search?: {
+        name?: string;
+        studentId?: string;
+        class?: string;
+        sortField?: string;
+        sortDirection?: string;
+    }
 ): Promise<StudentsResponse> => {
     try {
         const params = { page, limit, ...search };
-        const response = await api.get<StudentsResponse>('/students', { params });
+        const response = await api.get<StudentsResponse>("/students", {
+            params,
+        });
         return response.data;
     } catch (error) {
-        console.error('Error fetching students:', error);
+        console.error("Error fetching students:", error);
         throw error;
     }
 };
@@ -41,19 +49,21 @@ export const getStudentById = async (id: number): Promise<Student> => {
     }
 };
 
-export const createStudent = async (studentData: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>): Promise<Student> => {
+export const createStudent = async (
+    studentData: Omit<Student, "id" | "createdAt" | "updatedAt">
+): Promise<Student> => {
     try {
-        const response = await api.post<Student>('/students', studentData);
+        const response = await api.post<Student>("/students", studentData);
         return response.data;
     } catch (error) {
-        console.error('Error creating student:', error);
+        console.error("Error creating student:", error);
         throw error;
     }
 };
 
 export const updateStudent = async (
     id: number,
-    studentData: Partial<Omit<Student, 'id' | 'createdAt' | 'updatedAt'>>
+    studentData: Partial<Omit<Student, "id" | "createdAt" | "updatedAt">>
 ): Promise<Student> => {
     try {
         const response = await api.put<Student>(`/students/${id}`, studentData);
@@ -73,20 +83,21 @@ export const deleteStudent = async (id: number): Promise<void> => {
     }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const importStudentsFromCSV = async (file: File): Promise<any> => {
     try {
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append("file", file);
 
-        const response = await api.post('/students/import', formData, {
+        const response = await api.post("/students/import", formData, {
             headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": "multipart/form-data",
             },
         });
 
         return response.data;
     } catch (error) {
-        console.error('Error importing students from CSV:', error);
+        console.error("Error importing students from CSV:", error);
         throw error;
     }
-}; 
+};

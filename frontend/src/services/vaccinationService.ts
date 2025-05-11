@@ -1,6 +1,6 @@
-import api from './api';
-import { Student } from './studentService';
-import { VaccinationDrive } from './vaccinationDriveService';
+import api from "./api";
+import { Student } from "./studentService";
+import { VaccinationDrive } from "./vaccinationDriveService";
 
 export interface Vaccination {
     id: number;
@@ -37,6 +37,12 @@ export interface VaccinationStatistics {
     vaccinatedStudents: number;
     vaccinationPercentage: number;
     upcomingDrives: VaccinationDrive[] | null;
+    completedDrives:
+        | (VaccinationDrive & {
+              totalDoses: number;
+              vaccinationsDone: number;
+          })[]
+        | null;
 }
 
 export const getVaccinations = async (
@@ -46,10 +52,12 @@ export const getVaccinations = async (
 ): Promise<VaccinationsResponse> => {
     try {
         const params = { page, limit, ...filters };
-        const response = await api.get<VaccinationsResponse>('/vaccinations', { params });
+        const response = await api.get<VaccinationsResponse>("/vaccinations", {
+            params,
+        });
         return response.data;
     } catch (error) {
-        console.error('Error fetching vaccinations:', error);
+        console.error("Error fetching vaccinations:", error);
         throw error;
     }
 };
@@ -68,10 +76,13 @@ export const createVaccination = async (
     vaccinationData: VaccinationCreateRequest
 ): Promise<Vaccination> => {
     try {
-        const response = await api.post<Vaccination>('/vaccinations', vaccinationData);
+        const response = await api.post<Vaccination>(
+            "/vaccinations",
+            vaccinationData
+        );
         return response.data;
     } catch (error) {
-        console.error('Error creating vaccination:', error);
+        console.error("Error creating vaccination:", error);
         throw error;
     }
 };
@@ -85,12 +96,34 @@ export const deleteVaccination = async (id: number): Promise<void> => {
     }
 };
 
-export const getVaccinationStatistics = async (): Promise<VaccinationStatistics> => {
-    try {
-        const response = await api.get<VaccinationStatistics>('/vaccinations/statistics');
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching vaccination statistics:', error);
-        throw error;
+export const getVaccinationStatistics =
+    async (): Promise<VaccinationStatistics> => {
+        try {
+            const response = await api.get<VaccinationStatistics>(
+                "/vaccinations/statistics"
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching vaccination statistics:", error);
+            throw error;
+        }
+    };
+
+export const getClassList = async (): Promise<string[]> => {
+    const response = await api.get<{ classes: string[] }>(
+        "/vaccinations/classes"
+    );
+    return response.data.classes;
+};
+
+export const updateVaccination = async (
+    id: number,
+    data: {
+        studentId: number;
+        driveId: number;
+        vaccinationDate: string;
     }
-}; 
+): Promise<Vaccination> => {
+    const response = await api.put(`/vaccinations/${id}`, data);
+    return response.data;
+};

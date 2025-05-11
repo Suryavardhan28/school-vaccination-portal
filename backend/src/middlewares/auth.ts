@@ -1,10 +1,11 @@
-import type { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import type { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'school_vaccination_portal_secret_key';
+const JWT_SECRET =
+    process.env.JWT_SECRET || "school_vaccination_portal_secret_key";
 
 // Extend Express Request type to include user
 declare global {
@@ -18,27 +19,49 @@ declare global {
     }
 }
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+export const authenticateToken = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-        return res.status(401).json({ message: 'Authentication token is required' });
+        return res
+            .status(401)
+            .json({ message: "Authentication token is required" });
     }
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { id: number; role: string };
+        const decoded = jwt.verify(token, JWT_SECRET) as {
+            id: number;
+            role: string;
+        };
         req.user = decoded;
         next();
     } catch (error) {
-        return res.status(403).json({ message: 'Invalid or expired token' });
+        return res.status(403).json({ message: "Invalid or expired token" });
     }
 };
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-    if (req.user && req.user.role === 'admin') {
+    if (req.user && req.user.role === "admin") {
         next();
     } else {
-        return res.status(403).json({ message: 'Access denied: Admin role required' });
+        return res
+            .status(403)
+            .json({ message: "Access denied: Admin role required" });
     }
-}; 
+};
+
+export const authorizeRole =
+    (roles: string[]) => (req: Request, res: Response, next: NextFunction) => {
+        if (req.user && roles.includes(req.user.role)) {
+            next();
+        } else {
+            return res
+                .status(403)
+                .json({ message: "Access denied: Insufficient permissions" });
+        }
+    };

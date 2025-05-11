@@ -1,0 +1,764 @@
+{
+    "info": {
+        "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "name": "School Vaccination Portal",
+        "description": "API collection for the School Vaccination Portal application",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["auth", "login"]
+                        },
+                        "description": "Authenticate a user and get a JWT token"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Get All Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users"]
+                        },
+                        "description": "Get all users (Admin only)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "User ID"
+                                }
+                            ]
+                        },
+                        "description": "Get a user by ID (Admin only)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"coordinator\",\n    \"password\": \"password123\",\n    \"role\": \"coordinator\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users"]
+                        },
+                        "description": "Create a new user (Admin only)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update User",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"coordinator\",\n    \"password\": \"password123\",\n    \"role\": \"coordinator\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/users/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "User ID"
+                                }
+                            ]
+                        },
+                        "description": "Update an existing user (Admin only)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/users/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["users", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "User ID"
+                                }
+                            ]
+                        },
+                        "description": "Delete a user (Admin only)"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Students",
+            "item": [
+                {
+                    "name": "Get All Students",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/students?page=1&limit=10&name=John&studentId=12345&class=5A",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["students"],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "John"
+                                },
+                                {
+                                    "key": "studentId",
+                                    "value": "12345"
+                                },
+                                {
+                                    "key": "class",
+                                    "value": "5A"
+                                }
+                            ]
+                        },
+                        "description": "Get a paginated list of students with optional filtering"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Student by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/students/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["students", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Student ID"
+                                }
+                            ]
+                        },
+                        "description": "Get a single student by ID"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Student",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"John Doe\",\n    \"studentId\": \"12345\",\n    \"class\": \"5A\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/students",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["students"]
+                        },
+                        "description": "Create a new student"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Student",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"John Doe Updated\",\n    \"studentId\": \"12345\",\n    \"class\": \"6A\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/students/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["students", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Student ID"
+                                }
+                            ]
+                        },
+                        "description": "Update an existing student"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Student",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/students/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["students", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Student ID"
+                                }
+                            ]
+                        },
+                        "description": "Delete a student (Admin only)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Import Students from CSV",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/to/students.csv"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/students/import",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["students", "import"]
+                        },
+                        "description": "Import multiple students from a CSV file"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Vaccination Drives",
+            "item": [
+                {
+                    "name": "Get All Vaccination Drives",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccination-drives?upcoming=true&page=1&limit=10&name=COVID&class=5&status=upcoming",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccination-drives"],
+                            "query": [
+                                {
+                                    "key": "upcoming",
+                                    "value": "true"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "COVID"
+                                },
+                                {
+                                    "key": "class",
+                                    "value": "5"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "upcoming"
+                                }
+                            ]
+                        },
+                        "description": "Get a paginated list of vaccination drives with optional filtering"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Vaccination Drive by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccination-drives/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccination-drives", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Vaccination Drive ID"
+                                }
+                            ]
+                        },
+                        "description": "Get a single vaccination drive by ID"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Vaccination Drive",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"COVID-19 Vaccination Drive\",\n    \"date\": \"2023-12-15T09:00:00Z\",\n    \"availableDoses\": 100,\n    \"applicableClasses\": \"5,6,7,8\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccination-drives",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccination-drives"]
+                        },
+                        "description": "Create a new vaccination drive (must be at least 15 days in advance)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Vaccination Drive",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated COVID-19 Vaccination Drive\",\n    \"date\": \"2023-12-20T09:00:00Z\",\n    \"availableDoses\": 150,\n    \"applicableClasses\": \"5,6,7,8,9\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccination-drives/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccination-drives", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Vaccination Drive ID"
+                                }
+                            ]
+                        },
+                        "description": "Update an existing vaccination drive (Cannot edit past drives)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Vaccination Drive",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccination-drives/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccination-drives", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Vaccination Drive ID"
+                                }
+                            ]
+                        },
+                        "description": "Delete a vaccination drive (Cannot delete past drives)"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Vaccinations",
+            "item": [
+                {
+                    "name": "Get All Vaccinations",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccinations?page=1&limit=10&studentId=12345&driveId=1&vaccineName=COVID&sortField=date&sortDirection=DESC",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccinations"],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "studentId",
+                                    "value": "12345"
+                                },
+                                {
+                                    "key": "driveId",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "vaccineName",
+                                    "value": "COVID"
+                                },
+                                {
+                                    "key": "sortField",
+                                    "value": "date"
+                                },
+                                {
+                                    "key": "sortDirection",
+                                    "value": "DESC"
+                                }
+                            ]
+                        },
+                        "description": "Get a paginated list of vaccinations with optional filtering and sorting"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Vaccination by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccinations/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccinations", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Vaccination ID"
+                                }
+                            ]
+                        },
+                        "description": "Get a single vaccination by ID"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Vaccination",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"studentId\": 1,\n    \"driveId\": 1,\n    \"vaccinationDate\": \"2023-12-15T10:30:00Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccinations",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccinations"]
+                        },
+                        "description": "Record a new vaccination"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Vaccination",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"studentId\": 1,\n    \"driveId\": 1,\n    \"vaccinationDate\": \"2023-12-15T10:30:00Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccinations/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccinations", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Vaccination ID"
+                                }
+                            ]
+                        },
+                        "description": "Update an existing vaccination record"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Vaccination",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccinations/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccinations", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Vaccination ID"
+                                }
+                            ]
+                        },
+                        "description": "Delete a vaccination record"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Vaccination Statistics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/vaccinations/statistics",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["vaccinations", "statistics"]
+                        },
+                        "description": "Get vaccination statistics for dashboard"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Reports",
+            "item": [
+                {
+                    "name": "Generate Vaccination Report",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/reports/vaccination",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["reports", "vaccination"]
+                        },
+                        "description": "Generate a vaccination report (Excel format)"
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000/api",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "your_jwt_token_here",
+            "type": "string"
+        }
+    ]
+}

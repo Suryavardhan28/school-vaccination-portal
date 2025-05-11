@@ -1,4 +1,4 @@
-import api from './api';
+import api from "./api";
 
 export interface VaccinationDrive {
     id: number;
@@ -18,24 +18,46 @@ interface VaccinationDrivesResponse {
     vaccinationDrives: VaccinationDrive[];
 }
 
+interface VaccinationDrivesParams {
+    page?: number;
+    limit?: number;
+    upcoming?: boolean;
+    name?: string;
+    class?: string;
+    status?: string;
+    sortField?: string;
+    sortDirection?: "asc" | "desc";
+}
+
 export const getVaccinationDrives = async (
     page = 1,
     limit = 10,
-    upcoming?: boolean
+    params?: VaccinationDrivesParams
 ): Promise<VaccinationDrivesResponse> => {
     try {
-        const params = { page, limit, upcoming };
-        const response = await api.get<VaccinationDrivesResponse>('/vaccination-drives', { params });
+        const queryParams = {
+            page,
+            limit,
+            ...params,
+        };
+        const response = await api.get<VaccinationDrivesResponse>(
+            "/vaccination-drives",
+            { params: queryParams }
+        );
         return response.data;
     } catch (error) {
-        console.error('Error fetching vaccination drives:', error);
+        console.error("Error fetching vaccination drives:", error);
         throw error;
     }
 };
 
-export const getVaccinationDriveById = async (id: number): Promise<VaccinationDrive> => {
+export const getVaccinationDriveById = async (
+    id: number
+): Promise<VaccinationDrive> => {
     try {
-        const response = await api.get<VaccinationDrive>(`/vaccination-drives/${id}`);
+        const response = await api.get<VaccinationDrive>(
+            `/vaccination-drives/${id}`
+        );
         return response.data;
     } catch (error) {
         console.error(`Error fetching vaccination drive with id ${id}:`, error);
@@ -44,23 +66,29 @@ export const getVaccinationDriveById = async (id: number): Promise<VaccinationDr
 };
 
 export const createVaccinationDrive = async (
-    driveData: Omit<VaccinationDrive, 'id' | 'createdAt' | 'updatedAt'>
+    driveData: Omit<VaccinationDrive, "id" | "createdAt" | "updatedAt">
 ): Promise<VaccinationDrive> => {
     try {
-        const response = await api.post<VaccinationDrive>('/vaccination-drives', driveData);
+        const response = await api.post<VaccinationDrive>(
+            "/vaccination-drives",
+            driveData
+        );
         return response.data;
     } catch (error) {
-        console.error('Error creating vaccination drive:', error);
+        console.error("Error creating vaccination drive:", error);
         throw error;
     }
 };
 
 export const updateVaccinationDrive = async (
     id: number,
-    driveData: Partial<Omit<VaccinationDrive, 'id' | 'createdAt' | 'updatedAt'>>
+    driveData: Partial<Omit<VaccinationDrive, "id" | "createdAt" | "updatedAt">>
 ): Promise<VaccinationDrive> => {
     try {
-        const response = await api.put<VaccinationDrive>(`/vaccination-drives/${id}`, driveData);
+        const response = await api.put<VaccinationDrive>(
+            `/vaccination-drives/${id}`,
+            driveData
+        );
         return response.data;
     } catch (error) {
         console.error(`Error updating vaccination drive with id ${id}:`, error);
@@ -75,4 +103,13 @@ export const deleteVaccinationDrive = async (id: number): Promise<void> => {
         console.error(`Error deleting vaccination drive with id ${id}:`, error);
         throw error;
     }
-}; 
+};
+
+export const getVaccinationDrivesDropdown = async (): Promise<
+    VaccinationDrive[]
+> => {
+    const response = await api.get<{ vaccinationDrives: VaccinationDrive[] }>(
+        "/vaccination-drives?dropdown=true"
+    );
+    return response.data.vaccinationDrives;
+};
