@@ -9,6 +9,11 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
     TextField,
     Typography,
 } from "@mui/material";
@@ -43,12 +48,29 @@ interface StudentDialogsProps {
     loading: boolean;
     onCloseDialogs: () => void;
     onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSelectChange: (e: SelectChangeEvent<string>) => void;
     onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onAddStudent: (e: React.FormEvent<HTMLFormElement>) => void;
     onEditStudent: (e: React.FormEvent<HTMLFormElement>) => void;
     onDeleteStudent: () => void;
     onImportCSV: () => void;
 }
+
+// Add class options
+const CLASS_OPTIONS = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+];
 
 const StudentDialogs: React.FC<StudentDialogsProps> = ({
     openAddDialog,
@@ -62,6 +84,7 @@ const StudentDialogs: React.FC<StudentDialogsProps> = ({
     loading,
     onCloseDialogs,
     onInputChange,
+    onSelectChange,
     onFileChange,
     onAddStudent,
     onEditStudent,
@@ -124,17 +147,25 @@ const StudentDialogs: React.FC<StudentDialogsProps> = ({
                             onChange={onInputChange}
                             sx={{ mb: 2 }}
                         />
-                        <TextField
-                            margin="dense"
-                            name="class"
-                            label={t("students.class")}
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            required
-                            value={formData.class}
-                            onChange={onInputChange}
-                        />
+                        <FormControl fullWidth margin="dense">
+                            <InputLabel id="class-select-label">
+                                {t("students.class")}
+                            </InputLabel>
+                            <Select
+                                labelId="class-select-label"
+                                name="class"
+                                value={formData.class}
+                                label={t("students.class")}
+                                onChange={onSelectChange}
+                                required
+                            >
+                                {CLASS_OPTIONS.map((cls) => (
+                                    <MenuItem key={cls} value={cls}>
+                                        {t("students.class")} {cls}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={onCloseDialogs}>
@@ -186,17 +217,25 @@ const StudentDialogs: React.FC<StudentDialogsProps> = ({
                             onChange={onInputChange}
                             sx={{ mb: 2 }}
                         />
-                        <TextField
-                            margin="dense"
-                            name="class"
-                            label={t("students.class")}
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            required
-                            value={formData.class}
-                            onChange={onInputChange}
-                        />
+                        <FormControl fullWidth margin="dense">
+                            <InputLabel id="edit-class-select-label">
+                                {t("students.class")}
+                            </InputLabel>
+                            <Select
+                                labelId="edit-class-select-label"
+                                name="class"
+                                value={formData.class}
+                                label={t("students.class")}
+                                onChange={onSelectChange}
+                                required
+                            >
+                                {CLASS_OPTIONS.map((cls) => (
+                                    <MenuItem key={cls} value={cls}>
+                                        {t("students.class")} {cls}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={onCloseDialogs}>

@@ -79,7 +79,7 @@ const VaccinationFilters: React.FC<VaccinationFiltersProps> = ({
     };
 
     const handleClearFilters = () => {
-        onFilterChange("", "", "", "");
+        onFilterChange("", "", "all", "all");
     };
 
     return (
@@ -119,8 +119,8 @@ const VaccinationFilters: React.FC<VaccinationFiltersProps> = ({
                             label={t("vaccinations.vaccineName")}
                             disabled={loading}
                         >
-                            <MenuItem value="">
-                                {t("vaccinations.allVaccines")}
+                            <MenuItem value="all">
+                                <em>{t("vaccinations.allVaccines")}</em>
                             </MenuItem>
                             {drives.map((drive) => (
                                 <MenuItem key={drive.id} value={drive.name}>
@@ -139,8 +139,8 @@ const VaccinationFilters: React.FC<VaccinationFiltersProps> = ({
                             label={t("vaccinations.class")}
                             disabled={loading}
                         >
-                            <MenuItem value="">
-                                {t("vaccinations.allClasses")}
+                            <MenuItem value="all">
+                                <em>{t("vaccinations.allClasses")}</em>
                             </MenuItem>
                             {classes.map((cls) => (
                                 <MenuItem key={cls} value={cls}>
@@ -156,7 +156,13 @@ const VaccinationFilters: React.FC<VaccinationFiltersProps> = ({
                         fullWidth
                         variant="outlined"
                         onClick={handleClearFilters}
-                        disabled={loading}
+                        disabled={
+                            loading ||
+                            (!studentIdFilter &&
+                                !studentNameFilter &&
+                                vaccineNameFilter === "all" &&
+                                classFilter === "all")
+                        }
                     >
                         {t("vaccinations.clearFilters")}
                     </Button>

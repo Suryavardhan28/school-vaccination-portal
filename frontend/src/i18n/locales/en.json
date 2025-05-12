@@ -100,7 +100,8 @@
         "selectCSVFile": "Select CSV File",
         "uploadCSVFile": "Upload a CSV file containing student data. The file should have columns for name, studentId, and class.",
         "importStudentsFromCSV": "Import Students from CSV",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "allClasses": "All Classes"
     },
     "vaccinationDrives": {
         "title": "Vaccination Drives",
@@ -161,7 +162,9 @@
         "cancel": "Cancel",
         "allDrives": "All Drives",
         "scheduleDrive": "Schedule Drive",
-        "delete": "Delete"
+        "delete": "Delete",
+        "noVaccinationDrivesFound": "No vaccination drives found",
+        "allClasses": "All Classes"
     },
     "vaccinations": {
         "title": "Vaccinations",
@@ -304,7 +307,7 @@
         "searchByUsername": "Search by Username",
         "searchByRole": "Search by Role",
         "clearFilters": "Clear Filters",
-        "all": "All",
+        "allRoles": "All Roles",
         "admin": "Admin",
         "coordinator": "Coordinator",
         "username": "Username",
@@ -319,6 +322,7 @@
         "userDetails": "User Details",
         "user": "User",
         "userId": "User ID",
-        "password": "Password"
+        "password": "Password",
+        "searchByUserId": "Search by User ID"
     }
 }

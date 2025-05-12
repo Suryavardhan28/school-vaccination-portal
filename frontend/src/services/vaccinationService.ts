@@ -30,6 +30,9 @@ export interface VaccinationFilters {
     studentId?: string;
     driveId?: number;
     vaccineName?: string;
+    class?: string;
+    sortField?: string;
+    sortDirection?: string;
 }
 
 export interface VaccinationStatistics {

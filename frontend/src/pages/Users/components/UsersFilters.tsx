@@ -1,6 +1,8 @@
 import {
     Button,
+    FormControl,
     Grid,
+    InputLabel,
     MenuItem,
     Paper,
     Select,
@@ -12,6 +14,8 @@ import { useTranslation } from "react-i18next";
 interface UsersFiltersProps {
     usernameFilter: string;
     setUsernameFilter: (val: string) => void;
+    userIdFilter: string;
+    setUserIdFilter: (val: string) => void;
     roleFilter: string;
     setRoleFilter: (val: string) => void;
     clearFilters: () => void;
@@ -21,6 +25,8 @@ interface UsersFiltersProps {
 const UsersFilters: React.FC<UsersFiltersProps> = ({
     usernameFilter,
     setUsernameFilter,
+    userIdFilter,
+    setUserIdFilter,
     roleFilter,
     setRoleFilter,
     clearFilters,
@@ -33,6 +39,15 @@ const UsersFilters: React.FC<UsersFiltersProps> = ({
             <Grid container spacing={2} alignItems="center">
                 <Grid size={3}>
                     <TextField
+                        label={t("users.searchByUserId")}
+                        value={userIdFilter}
+                        onChange={(e) => setUserIdFilter(e.target.value)}
+                        size="small"
+                        fullWidth
+                    />
+                </Grid>
+                <Grid size={3}>
+                    <TextField
                         label={t("users.searchByUsername")}
                         value={usernameFilter}
                         onChange={(e) => setUsernameFilter(e.target.value)}
@@ -41,22 +56,39 @@ const UsersFilters: React.FC<UsersFiltersProps> = ({
                     />
                 </Grid>
                 <Grid size={3}>
-                    <Select
-                        value={roleFilter}
-                        onChange={(e) => setRoleFilter(e.target.value)}
-                        size="small"
-                        fullWidth
-                    >
-                        <MenuItem value="all">{t("users.all")}</MenuItem>
-                        <MenuItem value="admin">{t("users.admin")}</MenuItem>
-                        <MenuItem value="coordinator">
-                            {t("users.coordinator")}
-                        </MenuItem>
-                    </Select>
+                    <FormControl fullWidth size="small">
+                        <InputLabel id="role-filter-label">
+                            {t("users.searchByRole")}
+                        </InputLabel>
+                        <Select
+                            value={roleFilter}
+                            onChange={(e) => setRoleFilter(e.target.value)}
+                            size="small"
+                            fullWidth
+                            labelId="role-filter-label"
+                            name="roleFilter"
+                            label={t("users.searchByRole")}
+                        >
+                            <MenuItem value="all">
+                                <em>{t("users.allRoles")}</em>
+                            </MenuItem>
+                            <MenuItem value="admin">
+                                {t("users.admin")}
+                            </MenuItem>
+                            <MenuItem value="coordinator">
+                                {t("users.coordinator")}
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid flexGrow={1} />
                 <Grid size={2}>
                     <Button
+                        disabled={
+                            !usernameFilter &&
+                            !userIdFilter &&
+                            roleFilter === "all"
+                        }
                         variant="outlined"
                         onClick={clearFilters}
                         size="large"

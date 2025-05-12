@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import {
     Alert,
+    Badge,
     Box,
     Button,
     Chip,
@@ -67,7 +68,7 @@ const VaccinationDrives = () => {
         urlParams.includes("upcoming=true")
     );
     const [nameFilter, setNameFilter] = useState("");
-    const [classFilter, setClassFilter] = useState("");
+    const [classFilter, setClassFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState<
         "all" | "upcoming" | "past"
     >("all");
@@ -122,7 +123,10 @@ const VaccinationDrives = () => {
                             rowsPerPage,
                             {
                                 name: searchParams.name,
-                                class: searchParams.class,
+                                class:
+                                    searchParams.class === "all"
+                                        ? undefined
+                                        : searchParams.class,
                                 status: searchParams.status,
                                 upcoming: searchParams.upcomingOnly,
                                 sortField: searchParams.sortField,
@@ -299,17 +303,22 @@ const VaccinationDrives = () => {
     // Add clear filters function
     const clearFilters = () => {
         setNameFilter("");
-        setClassFilter("");
+        setClassFilter("all");
         setStatusFilter("all");
         setUpcomingOnly(false);
     };
 
     // Handle filter input changes
-    const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFilterChange = (e: SelectChangeEvent<string>) => {
         const { name, value } = e.target;
 
         if (name === "nameFilter") setNameFilter(value);
-        else if (name === "classFilter") setClassFilter(value);
+    };
+
+    // Handle class filter changes
+    const handleClassFilterChange = (e: SelectChangeEvent<string>) => {
+        const { name, value } = e.target;
+        if (name === "classFilter") setClassFilter(value);
     };
 
     // Handle status filter changes
@@ -656,6 +665,12 @@ const VaccinationDrives = () => {
         setSortDirection(direction);
     };
 
+    const filtersAppliedCount =
+        (nameFilter ? 1 : 0) +
+        (classFilter !== "all" ? 1 : 0) +
+        (statusFilter !== "all" ? 1 : 0) +
+        (upcomingOnly ? 1 : 0);
+
     return (
         <Box>
             <Box
@@ -668,17 +683,28 @@ const VaccinationDrives = () => {
                     {t("vaccinationDrives.title")}
                 </Typography>
                 <Box display="flex" gap={1}>
-                    <Button
-                        variant="outlined"
-                        startIcon={
-                            showFilters ? <ClearIcon /> : <FilterListIcon />
+                    <Badge
+                        color="primary"
+                        badgeContent={
+                            filtersAppliedCount > 0
+                                ? filtersAppliedCount
+                                : undefined
                         }
-                        onClick={toggleFilters}
+                        invisible={filtersAppliedCount === 0}
+                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     >
-                        {showFilters
-                            ? t("vaccinationDrives.hideFilters")
-                            : t("vaccinationDrives.showFilters")}
-                    </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={
+                                showFilters ? <ClearIcon /> : <FilterListIcon />
+                            }
+                            onClick={toggleFilters}
+                        >
+                            {showFilters
+                                ? t("vaccinationDrives.hideFilters")
+                                : t("vaccinationDrives.showFilters")}
+                        </Button>
+                    </Badge>
                     <Button
                         variant="contained"
                         startIcon={<AddIcon />}
@@ -704,9 +730,11 @@ const VaccinationDrives = () => {
                     upcomingOnly={upcomingOnly}
                     loading={loading}
                     onFilterChange={handleFilterChange}
+                    onClassFilterChange={handleClassFilterChange}
                     onStatusFilterChange={handleStatusFilterChange}
                     onToggleUpcomingFilter={toggleUpcomingFilter}
                     onClearFilters={clearFilters}
+                    classOptions={classOptions}
                 />
             )}
 

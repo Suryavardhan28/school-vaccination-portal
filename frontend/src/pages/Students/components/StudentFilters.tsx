@@ -1,4 +1,15 @@
-import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import {
+    Button,
+    FormControl,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Paper,
+    Select,
+    SelectChangeEvent,
+    TextField,
+    Typography,
+} from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,8 +19,25 @@ interface StudentFiltersProps {
     classFilter: string;
     loading?: boolean;
     onFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSelectChange: (e: SelectChangeEvent<string>) => void;
     onClearFilters: () => void;
 }
+
+// Add class options
+const CLASS_OPTIONS = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+];
 
 const StudentFilters: React.FC<StudentFiltersProps> = ({
     nameFilter,
@@ -17,6 +45,7 @@ const StudentFilters: React.FC<StudentFiltersProps> = ({
     classFilter,
     loading = false,
     onFilterChange,
+    onSelectChange,
     onClearFilters,
 }) => {
     const { t } = useTranslation();
@@ -52,16 +81,28 @@ const StudentFilters: React.FC<StudentFiltersProps> = ({
                     />
                 </Grid>
                 <Grid size={3}>
-                    <TextField
-                        name="classFilter"
-                        label={t("students.searchByClass")}
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        value={classFilter}
-                        onChange={onFilterChange}
-                        disabled={loading}
-                    />
+                    <FormControl fullWidth size="small">
+                        <InputLabel id="class-filter-label">
+                            {t("students.searchByClass")}
+                        </InputLabel>
+                        <Select
+                            labelId="class-filter-label"
+                            name="classFilter"
+                            value={classFilter}
+                            label={t("students.searchByClass")}
+                            onChange={onSelectChange}
+                            disabled={loading}
+                        >
+                            <MenuItem value="all">
+                                <em>{t("students.allClasses")}</em>
+                            </MenuItem>
+                            {CLASS_OPTIONS.map((cls) => (
+                                <MenuItem key={cls} value={cls}>
+                                    {t("students.class")} {cls}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid flexGrow={1} />
                 <Grid>
@@ -69,7 +110,9 @@ const StudentFilters: React.FC<StudentFiltersProps> = ({
                         fullWidth
                         disabled={
                             loading ||
-                            (!nameFilter && !studentIdFilter && !classFilter)
+                            (!nameFilter &&
+                                !studentIdFilter &&
+                                classFilter === "all")
                         }
                         variant="outlined"
                         onClick={onClearFilters}

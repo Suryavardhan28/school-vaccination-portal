@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import {
     Alert,
+    Badge,
     Box,
     Button,
     Chip,
@@ -69,6 +70,7 @@ const Users = () => {
     const [sortField, setSortField] = useState<string>("username");
     const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
     const [usernameFilter, setUsernameFilter] = useState("");
+    const [userIdFilter, setUserIdFilter] = useState("");
     const [roleFilter, setRoleFilter] = useState<string>("all");
     const [showFilters, setShowFilters] = useState(false);
     const [page, setPage] = useState(0);
@@ -90,6 +92,7 @@ const Users = () => {
             const response = await getUsers(page + 1, rowsPerPage, {
                 username: usernameFilter || undefined,
                 role: roleFilter !== "all" ? roleFilter : undefined,
+                userId: userIdFilter || undefined,
                 sortField,
                 sortDirection,
             });
@@ -110,6 +113,7 @@ const Users = () => {
         rowsPerPage,
         usernameFilter,
         roleFilter,
+        userIdFilter,
         sortField,
         sortDirection,
     ]);
@@ -206,9 +210,15 @@ const Users = () => {
 
     const clearFilters = () => {
         setUsernameFilter("");
+        setUserIdFilter("");
         setRoleFilter("all");
         setPage(0);
     };
+
+    const filtersAppliedCount =
+        (usernameFilter ? 1 : 0) +
+        (userIdFilter ? 1 : 0) +
+        (roleFilter !== "all" ? 1 : 0);
 
     // Columns
     const columns: Column<User>[] = [
@@ -274,17 +284,28 @@ const Users = () => {
                     {t("users.title")}
                 </Typography>
                 <Box display="flex" gap={1}>
-                    <Button
-                        variant="outlined"
-                        startIcon={
-                            showFilters ? <ClearIcon /> : <FilterListIcon />
+                    <Badge
+                        color="primary"
+                        badgeContent={
+                            filtersAppliedCount > 0
+                                ? filtersAppliedCount
+                                : undefined
                         }
-                        onClick={toggleFilters}
+                        invisible={filtersAppliedCount === 0}
+                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     >
-                        {showFilters
-                            ? t("users.hideFilters")
-                            : t("users.showFilters")}
-                    </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={
+                                showFilters ? <ClearIcon /> : <FilterListIcon />
+                            }
+                            onClick={toggleFilters}
+                        >
+                            {showFilters
+                                ? t("users.hideFilters")
+                                : t("users.showFilters")}
+                        </Button>
+                    </Badge>
                     <Button
                         variant="contained"
                         startIcon={<AddIcon />}
@@ -299,6 +320,8 @@ const Users = () => {
             <UsersFilters
                 usernameFilter={usernameFilter}
                 setUsernameFilter={setUsernameFilter}
+                userIdFilter={userIdFilter}
+                setUserIdFilter={setUserIdFilter}
                 roleFilter={roleFilter}
                 setRoleFilter={setRoleFilter}
                 clearFilters={clearFilters}

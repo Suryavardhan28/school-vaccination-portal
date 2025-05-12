@@ -217,9 +217,25 @@ VITE_API_URL=http://localhost:3000/api
 
 ### Running the Application
 
-1. Start the development servers
+1. Start the backend server
 
 ```bash
+# Navigate to backend directory
+cd backend
+
+# Using npm
+npm run dev
+
+# Using Bun (recommended)
+bun run dev
+```
+
+2. Start the frontend development server
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
 # Using npm
 npm run dev
 
@@ -287,26 +303,3 @@ The API documentation is available in the Postman collection located at `backend
 -   `GET /api/vaccinations` - Get all vaccinations
 -   `POST /api/vaccinations` - Record a new vaccination
 -   `GET /api/vaccinations/statistics` - Get vaccination statistics
-
-## 🏗 Building for Production
-
-```bash
-# Build both frontend and backend
-bun run build
-
-# Start production server
-bun run start
-```
-
-## 🧪 Testing
-
-```bash
-# Run frontend tests
-bun run test:frontend
-
-# Run backend tests
-bun run test:backend
-
-# Run all tests
-bun run test
-```

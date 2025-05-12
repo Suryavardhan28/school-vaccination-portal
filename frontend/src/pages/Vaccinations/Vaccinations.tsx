@@ -6,6 +6,7 @@ import {
     FilterList as FilterListIcon,
 } from "@mui/icons-material";
 import {
+    Badge,
     Box,
     Button,
     Chip,
@@ -69,8 +70,8 @@ const Vaccinations = () => {
     // State for filters
     const [studentIdFilter, setStudentIdFilter] = useState("");
     const [studentNameFilter, setStudentNameFilter] = useState("");
-    const [vaccineNameFilter, setVaccineNameFilter] = useState("");
-    const [classFilter, setClassFilter] = useState("");
+    const [vaccineNameFilter, setVaccineNameFilter] = useState("all");
+    const [classFilter, setClassFilter] = useState("all");
     const [sortField, setSortField] = useState<string>("date");
     const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
@@ -106,8 +107,11 @@ const Vaccinations = () => {
                 const filters = {
                     studentId: studentIdFilter || undefined,
                     studentName: studentNameFilter || undefined,
-                    vaccineName: vaccineNameFilter || undefined,
-                    class: classFilter || undefined,
+                    vaccineName:
+                        vaccineNameFilter === "all"
+                            ? undefined
+                            : vaccineNameFilter,
+                    class: classFilter === "all" ? undefined : classFilter,
                     sortField,
                     sortDirection,
                 };
@@ -451,6 +455,12 @@ const Vaccinations = () => {
         },
     ];
 
+    const filtersAppliedCount =
+        (studentIdFilter ? 1 : 0) +
+        (studentNameFilter ? 1 : 0) +
+        (vaccineNameFilter !== "all" ? 1 : 0) +
+        (classFilter !== "all" ? 1 : 0);
+
     return (
         <Box>
             <Box
@@ -463,17 +473,28 @@ const Vaccinations = () => {
                     {t("vaccinations.title")}
                 </Typography>
                 <Box display="flex" gap={1}>
-                    <Button
-                        variant="outlined"
-                        startIcon={
-                            showFilters ? <ClearIcon /> : <FilterListIcon />
+                    <Badge
+                        color="primary"
+                        badgeContent={
+                            filtersAppliedCount > 0
+                                ? filtersAppliedCount
+                                : undefined
                         }
-                        onClick={() => setShowFilters((prev) => !prev)}
+                        invisible={filtersAppliedCount === 0}
+                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     >
-                        {showFilters
-                            ? t("vaccinations.hideFilters")
-                            : t("vaccinations.showFilters")}
-                    </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={
+                                showFilters ? <ClearIcon /> : <FilterListIcon />
+                            }
+                            onClick={() => setShowFilters((prev) => !prev)}
+                        >
+                            {showFilters
+                                ? t("vaccinations.hideFilters")
+                                : t("vaccinations.showFilters")}
+                        </Button>
+                    </Badge>
                     <Button
                         variant="contained"
                         startIcon={<AddIcon />}

@@ -64,6 +64,7 @@ interface GetUsersResponse {
 interface GetUsersParams {
     username?: string;
     role?: string;
+    userId?: string;
     sortField?: string;
     sortDirection?: string;
 }

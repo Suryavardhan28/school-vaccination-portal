@@ -8,10 +8,12 @@ import {
 } from "@mui/icons-material";
 import {
     Alert,
+    Badge,
     Box,
     Button,
     Chip,
     IconButton,
+    SelectChangeEvent,
     Typography,
 } from "@mui/material";
 import { debounce } from "lodash";
@@ -61,7 +63,7 @@ const Students = () => {
     // Search filters
     const [nameFilter, setNameFilter] = useState("");
     const [studentIdFilter, setStudentIdFilter] = useState("");
-    const [classFilter, setClassFilter] = useState("");
+    const [classFilter, setClassFilter] = useState("all");
 
     // Dialog states
     const [openAddDialog, setOpenAddDialog] = useState(false);
@@ -119,7 +121,17 @@ const Students = () => {
                         const response = await getStudents(
                             page + 1,
                             rowsPerPage,
-                            searchParams
+                            {
+                                name: searchParams.name,
+                                studentId: searchParams.studentId,
+                                class:
+                                    searchParams.class &&
+                                    searchParams.class !== "all"
+                                        ? searchParams.class
+                                        : undefined,
+                                sortField: searchParams.sortField,
+                                sortDirection: searchParams.sortDirection,
+                            }
                         );
                         setStudents(response.students);
                         setTotalCount(response.total);
@@ -208,6 +220,12 @@ const Students = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Handle select changes
+    const handleSelectChange = (e: SelectChangeEvent<string>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
     // Handle pagination changes
     const handleChangePage = (_: unknown, newPage: number) => {
         setPage(newPage);
@@ -226,13 +244,17 @@ const Students = () => {
 
         if (name === "nameFilter") setNameFilter(value);
         else if (name === "studentIdFilter") setStudentIdFilter(value);
-        else if (name === "classFilter") setClassFilter(value);
+    };
+
+    const handleFilterSelectChange = (e: SelectChangeEvent<string>) => {
+        const { name, value } = e.target;
+        if (name === "classFilter") setClassFilter(value);
     };
 
     const clearFilters = () => {
         setNameFilter("");
         setStudentIdFilter("");
-        setClassFilter("");
+        setClassFilter("all");
     };
 
     // Handle CSV file selection
@@ -465,6 +487,11 @@ const Students = () => {
         },
     ];
 
+    const filtersAppliedCount =
+        (nameFilter ? 1 : 0) +
+        (studentIdFilter ? 1 : 0) +
+        (classFilter !== "all" ? 1 : 0);
+
     return (
         <Box>
             <Box
@@ -477,17 +504,28 @@ const Students = () => {
                     {t("students.title")}
                 </Typography>
                 <Box display="flex" gap={1}>
-                    <Button
-                        variant="outlined"
-                        startIcon={
-                            showFilters ? <ClearIcon /> : <FilterListIcon />
+                    <Badge
+                        color="primary"
+                        badgeContent={
+                            filtersAppliedCount > 0
+                                ? filtersAppliedCount
+                                : undefined
                         }
-                        onClick={toggleFilters}
+                        invisible={filtersAppliedCount === 0}
+                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
                     >
-                        {showFilters
-                            ? t("students.hideFilters")
-                            : t("students.showFilters")}
-                    </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={
+                                showFilters ? <ClearIcon /> : <FilterListIcon />
+                            }
+                            onClick={toggleFilters}
+                        >
+                            {showFilters
+                                ? t("students.hideFilters")
+                                : t("students.showFilters")}
+                        </Button>
+                    </Badge>
                     <Button
                         variant="outlined"
                         startIcon={<UploadIcon />}
@@ -519,6 +557,7 @@ const Students = () => {
                     classFilter={classFilter}
                     loading={loading}
                     onFilterChange={handleFilterChange}
+                    onSelectChange={handleFilterSelectChange}
                     onClearFilters={clearFilters}
                 />
             )}
@@ -555,6 +594,7 @@ const Students = () => {
                 loading={loading}
                 onCloseDialogs={handleCloseDialogs}
                 onInputChange={handleInputChange}
+                onSelectChange={handleSelectChange}
                 onFileChange={handleFileChange}
                 onAddStudent={handleAddStudent}
                 onEditStudent={handleEditStudent}

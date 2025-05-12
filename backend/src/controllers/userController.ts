@@ -13,6 +13,7 @@ export const getUsers = async (req: Request, res: Response) => {
         const role = req.query.role as string;
         const sortField = (req.query.sortField as string) || "username";
         const sortDirection = (req.query.sortDirection as string) || "asc";
+        const userId = req.query.userId as string;
 
         // Build where clause for filtering
         const where: any = {};
@@ -23,6 +24,9 @@ export const getUsers = async (req: Request, res: Response) => {
         }
         if (role && role !== "all") {
             where.role = role;
+        }
+        if (userId && typeof userId === "string") {
+            where.id = userId;
         }
 
         // Get total count for pagination

@@ -5,8 +5,14 @@ import { Student, Vaccination, VaccinationDrive } from "../models";
 // Get vaccinations with pagination and filtering
 export const getVaccinations = async (req: Request, res: Response) => {
     try {
-        const { studentId, driveId, vaccineName, sortField, sortDirection } =
-            req.query;
+        const {
+            studentId,
+            driveId,
+            vaccineName,
+            class: classFilter,
+            sortField,
+            sortDirection,
+        } = req.query;
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const offset = (page - 1) * limit;
@@ -26,6 +32,12 @@ export const getVaccinations = async (req: Request, res: Response) => {
         if (studentId) {
             includeConditions[0].where = {
                 studentId: { [Op.like]: `%${studentId}%` },
+            };
+        }
+
+        if (classFilter) {
+            includeConditions[0].where = {
+                class: { [Op.like]: `%${classFilter}%` },
             };
         }
 

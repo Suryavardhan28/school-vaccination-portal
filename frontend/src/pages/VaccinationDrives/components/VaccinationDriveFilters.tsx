@@ -22,9 +22,11 @@ interface VaccinationDriveFiltersProps {
     upcomingOnly: boolean;
     loading: boolean;
     onFilterChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    onClassFilterChange: (e: SelectChangeEvent<string>) => void;
     onStatusFilterChange: (e: SelectChangeEvent<string>) => void;
     onToggleUpcomingFilter: () => void;
     onClearFilters: () => void;
+    classOptions: string[];
 }
 
 const VaccinationDriveFilters: React.FC<VaccinationDriveFiltersProps> = ({
@@ -34,9 +36,11 @@ const VaccinationDriveFilters: React.FC<VaccinationDriveFiltersProps> = ({
     upcomingOnly,
     loading,
     onFilterChange,
+    onClassFilterChange,
     onStatusFilterChange,
     onToggleUpcomingFilter,
     onClearFilters,
+    classOptions,
 }) => {
     const { t } = useTranslation();
 
@@ -61,16 +65,29 @@ const VaccinationDriveFilters: React.FC<VaccinationDriveFiltersProps> = ({
                 </Grid>
 
                 <Grid size={3}>
-                    <TextField
-                        fullWidth
-                        name="classFilter"
-                        label={t("vaccinationDrives.searchByClass")}
-                        variant="outlined"
-                        size="small"
-                        value={classFilter}
-                        onChange={onFilterChange}
-                        disabled={loading}
-                    />
+                    <FormControl fullWidth size="small">
+                        <InputLabel id="class-filter-label">
+                            {t("vaccinationDrives.searchByClass")}
+                        </InputLabel>
+                        <Select
+                            labelId="class-filter-label"
+                            name="classFilter"
+                            value={classFilter}
+                            label={t("vaccinationDrives.searchByClass")}
+                            onChange={onClassFilterChange}
+                            disabled={loading}
+                            displayEmpty
+                        >
+                            <MenuItem value="all">
+                                <em>{t("vaccinationDrives.allClasses")}</em>
+                            </MenuItem>
+                            {classOptions.map((cls) => (
+                                <MenuItem key={cls} value={cls}>
+                                    {t("vaccinationDrives.class")} {cls}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
 
                 <Grid size={3}>
@@ -85,7 +102,7 @@ const VaccinationDriveFilters: React.FC<VaccinationDriveFiltersProps> = ({
                             disabled={loading}
                         >
                             <MenuItem value="all">
-                                {t("vaccinationDrives.allDrives")}
+                                <em>{t("vaccinationDrives.allDrives")}</em>
                             </MenuItem>
                             <MenuItem value="upcoming">
                                 {t("vaccinationDrives.upcomingDrives")}
@@ -117,7 +134,7 @@ const VaccinationDriveFilters: React.FC<VaccinationDriveFiltersProps> = ({
                             disabled={
                                 loading ||
                                 (!nameFilter &&
-                                    !classFilter &&
+                                    classFilter === "all" &&
                                     statusFilter === "all" &&
                                     !upcomingOnly)
                             }
