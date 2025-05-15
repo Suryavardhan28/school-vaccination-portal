@@ -41,11 +41,77 @@ Authorization: Bearer <your_jwt_token>
         }
     }
     ```
--   **Status Codes**:
-    -   `200 OK`: Login successful
-    -   `400 Bad Request`: Missing username or password
-    -   `401 Unauthorized`: Invalid credentials
-    -   `500 Internal Server Error`: Server error
+
+### Users
+
+#### Get All Users
+
+-   **URL**: `/users`
+-   **Method**: `GET`
+-   **Description**: Get all users (Admin only)
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **Response**: Array of user objects
+
+#### Get User by ID
+
+-   **URL**: `/users/:id`
+-   **Method**: `GET`
+-   **Description**: Get a user by ID (Admin only)
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **URL Parameters**:
+    -   id: User ID
+-   **Response**: User object
+
+#### Create User
+
+-   **URL**: `/users`
+-   **Method**: `POST`
+-   **Description**: Create a new user (Admin only)
+-   **Headers**:
+    -   Authorization: Bearer token
+    -   Content-Type: application/json
+-   **Request Body**:
+    ```json
+    {
+        "username": "string",
+        "password": "string",
+        "role": "string"
+    }
+    ```
+-   **Response**: Created user object
+
+#### Update User
+
+-   **URL**: `/users/:id`
+-   **Method**: `PUT`
+-   **Description**: Update an existing user (Admin only)
+-   **Headers**:
+    -   Authorization: Bearer token
+    -   Content-Type: application/json
+-   **URL Parameters**:
+    -   id: User ID
+-   **Request Body**:
+    ```json
+    {
+        "username": "string",
+        "password": "string",
+        "role": "string"
+    }
+    ```
+-   **Response**: Updated user object
+
+#### Delete User
+
+-   **URL**: `/users/:id`
+-   **Method**: `DELETE`
+-   **Description**: Delete a user (Admin only)
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **URL Parameters**:
+    -   id: User ID
+-   **Response**: Success message
 
 ### Students
 
@@ -54,19 +120,17 @@ Authorization: Bearer <your_jwt_token>
 -   **URL**: `/students`
 -   **Method**: `GET`
 -   **Description**: Get a paginated list of students with optional filtering
+-   **Headers**:
+    -   Authorization: Bearer token
 -   **Query Parameters**:
-    -   `name` (optional): Filter by student name
-    -   `studentId` (optional): Filter by student ID
-    -   `class` (optional): Filter by class
-    -   `vaccinationStatus` (optional): Filter by vaccination status
-    -   `page` (optional, default: 1): Page number
-    -   `limit` (optional, default: 10): Items per page
+    -   page: number (default: 1)
+    -   limit: number (default: 10)
+    -   name: string (optional)
+    -   studentId: string (optional)
+    -   class: string (optional)
 -   **Response**:
     ```json
     {
-        "total": "number",
-        "totalPages": "number",
-        "currentPage": "number",
         "students": [
             {
                 "id": "number",
@@ -74,7 +138,9 @@ Authorization: Bearer <your_jwt_token>
                 "studentId": "string",
                 "class": "string"
             }
-        ]
+        ],
+        "total": "number",
+        "page": "number"
     }
     ```
 
@@ -83,21 +149,20 @@ Authorization: Bearer <your_jwt_token>
 -   **URL**: `/students/:id`
 -   **Method**: `GET`
 -   **Description**: Get a single student by ID
--   **Response**:
-    ```json
-    {
-        "id": "number",
-        "name": "string",
-        "studentId": "string",
-        "class": "string"
-    }
-    ```
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **URL Parameters**:
+    -   id: Student ID
+-   **Response**: Student object
 
 #### Create Student
 
 -   **URL**: `/students`
 -   **Method**: `POST`
 -   **Description**: Create a new student
+-   **Headers**:
+    -   Authorization: Bearer token
+    -   Content-Type: application/json
 -   **Request Body**:
     ```json
     {
@@ -107,16 +172,17 @@ Authorization: Bearer <your_jwt_token>
     }
     ```
 -   **Response**: Created student object
--   **Status Codes**:
-    -   `201 Created`: Student created successfully
-    -   `400 Bad Request`: Missing required fields
-    -   `409 Conflict`: Student ID already exists
 
 #### Update Student
 
 -   **URL**: `/students/:id`
 -   **Method**: `PUT`
 -   **Description**: Update an existing student
+-   **Headers**:
+    -   Authorization: Bearer token
+    -   Content-Type: application/json
+-   **URL Parameters**:
+    -   id: Student ID
 -   **Request Body**:
     ```json
     {
@@ -126,43 +192,28 @@ Authorization: Bearer <your_jwt_token>
     }
     ```
 -   **Response**: Updated student object
--   **Status Codes**:
-    -   `200 OK`: Student updated successfully
-    -   `404 Not Found`: Student not found
-    -   `409 Conflict`: Student ID already exists
 
 #### Delete Student
 
 -   **URL**: `/students/:id`
 -   **Method**: `DELETE`
--   **Description**: Delete a student
--   **Response**:
-    ```json
-    {
-        "message": "Student deleted successfully"
-    }
-    ```
--   **Status Codes**:
-    -   `200 OK`: Student deleted successfully
-    -   `404 Not Found`: Student not found
+-   **Description**: Delete a student (Admin only)
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **URL Parameters**:
+    -   id: Student ID
+-   **Response**: Success message
 
 #### Import Students from CSV
 
 -   **URL**: `/students/import`
 -   **Method**: `POST`
 -   **Description**: Import multiple students from a CSV file
--   **Request**: Form data with a CSV file
-    -   `file`: CSV file with columns: name, studentId, class
--   **Response**:
-    ```json
-    {
-        "message": "CSV import completed",
-        "totalProcessed": "number",
-        "successCount": "number",
-        "errorCount": "number",
-        "errors": ["string"]
-    }
-    ```
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **Request**: Form data
+    -   file: CSV file
+-   **Response**: Import results
 
 ### Vaccination Drives
 
@@ -171,16 +222,18 @@ Authorization: Bearer <your_jwt_token>
 -   **URL**: `/vaccination-drives`
 -   **Method**: `GET`
 -   **Description**: Get a paginated list of vaccination drives
+-   **Headers**:
+    -   Authorization: Bearer token
 -   **Query Parameters**:
-    -   `upcoming` (optional): Filter for upcoming drives (within next 30 days)
-    -   `page` (optional, default: 1): Page number
-    -   `limit` (optional, default: 10): Items per page
+    -   upcoming: boolean (optional)
+    -   page: number (default: 1)
+    -   limit: number (default: 10)
+    -   name: string (optional)
+    -   class: string (optional)
+    -   status: string (optional)
 -   **Response**:
     ```json
     {
-        "total": "number",
-        "totalPages": "number",
-        "currentPage": "number",
         "vaccinationDrives": [
             {
                 "id": "number",
@@ -189,7 +242,9 @@ Authorization: Bearer <your_jwt_token>
                 "availableDoses": "number",
                 "applicableClasses": ["string"]
             }
-        ]
+        ],
+        "total": "number",
+        "page": "number"
     }
     ```
 
@@ -198,6 +253,10 @@ Authorization: Bearer <your_jwt_token>
 -   **URL**: `/vaccination-drives/:id`
 -   **Method**: `GET`
 -   **Description**: Get a single vaccination drive by ID
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **URL Parameters**:
+    -   id: Vaccination Drive ID
 -   **Response**: Vaccination drive object
 
 #### Create Vaccination Drive
@@ -205,6 +264,9 @@ Authorization: Bearer <your_jwt_token>
 -   **URL**: `/vaccination-drives`
 -   **Method**: `POST`
 -   **Description**: Create a new vaccination drive
+-   **Headers**:
+    -   Authorization: Bearer token
+    -   Content-Type: application/json
 -   **Request Body**:
     ```json
     {
@@ -215,16 +277,17 @@ Authorization: Bearer <your_jwt_token>
     }
     ```
 -   **Response**: Created vaccination drive object
--   **Status Codes**:
-    -   `201 Created`: Drive created successfully
-    -   `400 Bad Request`: Missing required fields or invalid date
-    -   `409 Conflict`: Another drive already scheduled for this date
 
 #### Update Vaccination Drive
 
 -   **URL**: `/vaccination-drives/:id`
 -   **Method**: `PUT`
 -   **Description**: Update an existing vaccination drive
+-   **Headers**:
+    -   Authorization: Bearer token
+    -   Content-Type: application/json
+-   **URL Parameters**:
+    -   id: Vaccination Drive ID
 -   **Request Body**:
     ```json
     {
@@ -235,27 +298,17 @@ Authorization: Bearer <your_jwt_token>
     }
     ```
 -   **Response**: Updated vaccination drive object
--   **Status Codes**:
-    -   `200 OK`: Drive updated successfully
-    -   `400 Bad Request`: Cannot edit past drives
-    -   `404 Not Found`: Drive not found
-    -   `409 Conflict`: Another drive already scheduled for this date
 
 #### Delete Vaccination Drive
 
 -   **URL**: `/vaccination-drives/:id`
 -   **Method**: `DELETE`
 -   **Description**: Delete a vaccination drive
--   **Response**:
-    ```json
-    {
-        "message": "Vaccination drive deleted successfully"
-    }
-    ```
--   **Status Codes**:
-    -   `200 OK`: Drive deleted successfully
-    -   `400 Bad Request`: Cannot delete past drives
-    -   `404 Not Found`: Drive not found
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **URL Parameters**:
+    -   id: Vaccination Drive ID
+-   **Response**: Success message
 
 ### Vaccinations
 
@@ -263,7 +316,17 @@ Authorization: Bearer <your_jwt_token>
 
 -   **URL**: `/vaccinations`
 -   **Method**: `GET`
--   **Description**: Get a list of vaccinations
+-   **Description**: Get a paginated list of vaccinations
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **Query Parameters**:
+    -   page: number (default: 1)
+    -   limit: number (default: 10)
+    -   studentId: number (optional)
+    -   driveId: number (optional)
+    -   vaccineName: string (optional)
+    -   sortField: string (optional)
+    -   sortDirection: string (optional)
 -   **Response**: Array of vaccination objects
 
 #### Get Vaccination by ID
@@ -271,6 +334,10 @@ Authorization: Bearer <your_jwt_token>
 -   **URL**: `/vaccinations/:id`
 -   **Method**: `GET`
 -   **Description**: Get a single vaccination by ID
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **URL Parameters**:
+    -   id: Vaccination ID
 -   **Response**: Vaccination object
 
 #### Create Vaccination
@@ -278,44 +345,68 @@ Authorization: Bearer <your_jwt_token>
 -   **URL**: `/vaccinations`
 -   **Method**: `POST`
 -   **Description**: Record a new vaccination
+-   **Headers**:
+    -   Authorization: Bearer token
+    -   Content-Type: application/json
 -   **Request Body**:
     ```json
     {
         "studentId": "number",
-        "vaccinationDriveId": "number",
-        "vaccineName": "string",
-        "doseNumber": "number",
-        "date": "string (ISO date)"
+        "driveId": "number",
+        "vaccinationDate": "string (ISO date)"
     }
     ```
 -   **Response**: Created vaccination object
+
+#### Update Vaccination
+
+-   **URL**: `/vaccinations/:id`
+-   **Method**: `PUT`
+-   **Description**: Update an existing vaccination record
+-   **Headers**:
+    -   Authorization: Bearer token
+    -   Content-Type: application/json
+-   **URL Parameters**:
+    -   id: Vaccination ID
+-   **Request Body**:
+    ```json
+    {
+        "studentId": "number",
+        "driveId": "number",
+        "vaccinationDate": "string (ISO date)"
+    }
+    ```
+-   **Response**: Updated vaccination object
 
 #### Delete Vaccination
 
 -   **URL**: `/vaccinations/:id`
 -   **Method**: `DELETE`
 -   **Description**: Delete a vaccination record
--   **Response**:
-    ```json
-    {
-        "message": "Vaccination deleted successfully"
-    }
-    ```
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **URL Parameters**:
+    -   id: Vaccination ID
+-   **Response**: Success message
 
 #### Get Vaccination Statistics
 
 -   **URL**: `/vaccinations/statistics`
 -   **Method**: `GET`
--   **Description**: Get vaccination statistics
--   **Response**: Statistics object with vaccination data
+-   **Description**: Get vaccination statistics for dashboard
+-   **Headers**:
+    -   Authorization: Bearer token
+-   **Response**: Statistics object
 
 ### Reports
 
 #### Generate Vaccination Report
 
--   **URL**: `/reports/vaccination-report`
+-   **URL**: `/reports/vaccination`
 -   **Method**: `GET`
 -   **Description**: Generate a vaccination report
+-   **Headers**:
+    -   Authorization: Bearer token
 -   **Response**: Report data or file download
 
 ## Error Responses
@@ -370,9 +461,7 @@ All endpoints may return the following error responses:
 {
     "id": "number",
     "studentId": "number",
-    "vaccinationDriveId": "number",
-    "vaccineName": "string",
-    "doseNumber": "number",
-    "date": "string (ISO date)"
+    "driveId": "number",
+    "vaccinationDate": "string (ISO date)"
 }
 ```
